@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Find My Star - 별자리 찾기</title>
+    <link rel="stylesheet" href="findConst.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+    <canvas id="constellationCanvas"></canvas>
+
+    <header>
+        <nav>
+            <div class="logo"><a href="mainHome.html">COSMOS</a></div>
+            <ul>
+                <li><a href="mainHome.html">홈</a></li>
+                <li><a href="findConst.html" class="active">별자리 찾기</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section id="input-section">
+            <h1 class="title">당신의 별자리를 찾아보세요</h1>
+            <p class="subtitle">생년월일을 입력하면 밤하늘이 당신의 운명을 그려줍니다.</p>
+            <div class="input-group">
+                <input type="date" id="birth-date">
+                <button id="find-btn">운명 확인하기</button>
+            </div>
+        </section>
+
+        <section id="result-section" class="hidden">
+            <div class="result-info">
+                <h2 id="const-name">별자리 이름</h2>
+                <p id="const-date">날짜 범위</p>
+                <div class="description-box">
+                    <p id="const-desc">별자리에 대한 설명이 이곳에 나타납니다.</p>
+                </div>
+                <button onclick="location.reload()" class="retry-btn">다시 찾기</button>
+            </div>
+        </section>
+    </main>
+
+    <script src="findConst.js"></script>
+</body>
+</html>

@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cosmic Match - 별자리 궁합</title>
+    <link rel="stylesheet" href="match.css">
+</head>
+<body>
+    <canvas id="starCanvas"></canvas> <header>
+        <nav>
+            <div class="logo"><a href="mainHome.html">COSMOS</a></div>
+            <ul>
+                <li><a href="mainHome.html">홈</a></li>
+                <li><a href="findConst.html">별자리 찾기</a></li>
+                <li><a href="match.html" class="active">운세 & 궁합</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+    <div class="match-container">
+        <h1>Cosmic Destiny</h1>
+        <p>두 별자리의 운명적 주파수를 분석합니다.</p>
+        
+        <div class="selector-wrapper">
+            <select id="sign1">
+                <option value="Aries">양자리</option>
+                <option value="Taurus">황소자리</option>
+                <option value="Gemini">쌍둥이자리</option>
+                <option value="Cancer">게자리</option>
+                <option value="Leo">사자자리</option>
+                <option value="Virgo">처녀자리</option>
+                <option value="Libra">천칭자리</option>
+                <option value="Scorpio">전갈자리</option>
+                <option value="Sagittarius">사수자리</option>
+                <option value="Capricorn">염소자리</option>
+                <option value="Aquarius">물병자리</option>
+                <option value="Pisces">물고기자리</option>
+            </select>
+            <span class="vs">VS</span>
+            <select id="sign2">
+                <option value="Leo">사자자리</option>
+                </select>
+        </div>
+
+        <button id="match-btn">분석 시작</button>
+
+        <div id="match-result" class="hidden">
+            <div class="result-card">
+                <div class="score-section">
+                    <div class="score-circle">
+                        <span id="score">0</span>%
+                    </div>
+                    <h2 id="match-title">최상의 파트너</h2>
+                </div>
+
+                <div class="content-grid">
+                    <div class="illust-box">
+                        <img id="result-img" src="" alt="별자리 이미지">
+                    </div>
+                    
+                    <div class="desc-box">
+                        <h3>왜 잘 맞을까요?</h3>
+                        <p id="match-desc">상세 설명이 여기에 표시됩니다.</p>
+                    </div>
+                </div>
+
+                <div class="relation-box">
+                    <div class="good-match">
+                        <h4>최고의 조합 ❤️</h4>
+                        <span id="best-sign">사자자리</span>
+                    </div>
+                    <div class="bad-match">
+                        <h4>주의가 필요한 조합 ⚠️</h4>
+                        <span id="worst-sign">물고기자리</span>
+                    </div>
+                </div>
+
+                <button onclick="location.reload()" class="retry-btn">다시 테스트하기</button>
+            </div>
+        </div>
+    </div>
+</main>
+    <script src="match.js"></script>
+</body>
+</html>

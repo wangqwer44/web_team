@@ -1,89 +1,4 @@
-/* 1. 기본 초기화 및 폰트 설정 */
-@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;500;700&display=swap');
-
-:root {
-    --bg-color: #050510;
-    --card-bg: rgba(255, 255, 255, 0.05);
-    --accent-color: #7d5fff;
-    --text-color: #ffffff;
-    --neon-blue: #00d2ff;
-}
-
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-body {
-    font-family: 'Noto Sans KR', sans-serif;
-    background-color: var(--bg-color);
-    color: var(--text-color);
-    overflow-x: hidden;
-    line-height: 1.6;
-}
-
-/* 2. 배경 캔버스 (별자리 효과용) */
-#starCanvas {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: -1;
-    background: radial-gradient(circle at center, #1b2735 0%, #090a0f 100%);
-}
-
-/* 3. 네비게이션 바 (글래스모피즘) */
-header {
-    position: fixed;
-    top: 0;
-    width: 100%;
-    padding: 20px 50px;
-    background: rgba(255, 255, 255, 0.03);
-    backdrop-filter: blur(15px);
-    z-index: 1000;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-nav {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    max-width: 1200px;
-    margin: 0 auto;
-}
-
-.logo {
-    font-size: 1.5rem;
-    font-weight: 700;
-    letter-spacing: 4px;
-    color: var(--neon-blue);
-    text-shadow: 0 0 10px var(--neon-blue);
-}
-
-nav ul {
-    display: flex;
-    list-style: none;
-}
-
-nav ul li {
-    margin-left: 30px;
-}
-
-nav ul li a {
-    text-decoration: none;
-    color: #ccc;
-    font-size: 0.9rem;
-    transition: 0.3s;
-}
-
-nav ul li a:hover {
-    color: var(--text-color);
-    text-shadow: 0 0 8px #fff;
-}
-
-/* 4. 히어로 섹션 */
+/* 히어로 섹션 */
 #hero {
     height: 100vh;
     display: flex;
@@ -101,6 +16,12 @@ nav ul li a:hover {
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     animation: fadeInUp 1s ease-out;
+}
+
+#hero p {
+    font-size: 1.2rem;
+    color: #ccc;
+    margin-bottom: 10px;
 }
 
 .cta-btn {
@@ -121,7 +42,7 @@ nav ul li a:hover {
     box-shadow: 0 0 20px var(--neon-blue);
 }
 
-/* 5. 별자리 카드 섹션 (3D Flip Effect) */
+/* 별자리 카드 섹션 (3D Flip Effect) */
 #constellations {
     padding: 100px 50px;
     max-width: 1200px;
@@ -142,7 +63,7 @@ h2 {
 
 .const-card {
     height: 400px;
-    perspective: 1000px; /* 3D 효과를 위한 원근감 */
+    perspective: 1000px;
 }
 
 .card-inner {
@@ -179,14 +100,11 @@ h2 {
     text-align: center;
 }
 
-/* 6. 애니메이션 */
 @keyframes fadeInUp {
     from { opacity: 0; transform: translateY(30px); }
     to { opacity: 1; transform: translateY(0); }
 }
 
-/* 반응형 설정 */
 @media (max-width: 768px) {
     #hero h1 { font-size: 2.5rem; }
-    header { padding: 15px 20px; }
 }

@@ -56,6 +56,10 @@ nav .logo a {
     text-decoration: none;
     letter-spacing: 2px;
 }
+nav .logo a:hover {
+    color: var(--neon-blue);
+    text-shadow: 0 0 10px var(--neon-blue), 0 0 20px rgba(127, 255, 212, 0.6);
+}
 
 nav ul {
     display: table-cell;

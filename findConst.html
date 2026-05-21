@@ -1,19 +1,23 @@
 <!DOCTYPE html>
 <html lang="ko">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Find My Star - 별자리 찾기</title>
+    <title>Cosmos - 내 별자리 찾기</title>
     <link rel="stylesheet" href="shared.css">
+    <link rel="stylesheet" href="mainHome.css">
     <link rel="stylesheet" href="findConst.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
+
 <body>
-    <canvas id="constellationCanvas"></canvas>
+    <canvas id="starCanvas"></canvas>
 
     <header>
         <nav>
-            <div class="logo"><a href="mainHome.html">COSMOS</a></div>
+            <div class="logo">
+                <a href="mainHome.html">COSMOS</a>
+            </div>
             <ul>
                 <li><a href="mainHome.html">홈</a></li>
                 <li><a href="findConst.html" class="active">별자리 찾기</a></li>
@@ -22,28 +26,43 @@
         </nav>
     </header>
 
-    <main>
-        <section id="input-section">
-            <h1 class="title">당신의 별자리를 찾아보세요</h1>
-            <p class="subtitle">생년월일을 입력하면 밤하늘이 당신의 운명을 그려줍니다.</p>
-            <div class="input-group">
-                <input type="date" id="birth-date">
-                <button id="find-btn">운명 확인하기</button>
+    <main class="find-page-container">
+        <section id="zodiac-finder">
+            <h2>나의 탄생 별자리 찾기</h2>
+            <p class="section-subtitle">당신이 태어난 날, 밤하늘을 수놓았던 별자리를 찾아보세요.</p>
+
+            <div class="finder-box">
+                <div class="input-group">
+                    <label for="birth-date">생년월일 </label>
+                    <input type="date" id="birth-date" min="1000-01-01" max="2099-12-31">
+                </div>
+                <button id="find-btn">별자리 분석하기</button>
+            </div>
+
+            <div id="finder-result" class="result-card hidden">
+                <div class="result-header">
+                    <span class="result-tag">당신의 별자리는</span>
+                    <h3 id="result-name">물병자리</h3>
+                    <span id="result-date" class="result-date-text">1.20 - 2.18</span>
+                </div>
+                <div class="result-body">
+                    <img id="result-img" src="" alt="별자리 이미지" class="zodiac-img">
+                    <p id="result-desc">별자리 설명이 이곳에 들어갑니다.</p>
+                </div>
+                <button id="close-result-btn">확인</button>
             </div>
         </section>
 
-        <section id="result-section" class="hidden">
-            <div class="result-info">
-                <h2 id="const-name">별자리 이름</h2>
-                <p id="const-date">날짜 범위</p>
-                <div class="description-box">
-                    <p id="const-desc">별자리에 대한 설명이 이곳에 나타납니다.</p>
-                </div>
-                <button onclick="location.reload()" class="retry-btn">다시 찾기</button>
-            </div>
+        <section id="all-zodiacs">
+            <h2>12가지 별자리 한눈에 보기</h2>
+            <p class="section-subtitle">밤하늘을 구성하는 12개의 신비로운 이야기들입니다.</p>
+
+            <div class="card-container" id="gridCards"></div>
         </section>
     </main>
 
+    <script src="mainHome.js"></script>
     <script src="findConst.js"></script>
 </body>
+
 </html>

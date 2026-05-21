@@ -1,0 +1,149 @@
+/* 망원경 페이지 전용 스타일 */
+body {
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: transparent; 
+}
+
+/* 🏠 우측 상단 홈으로 돌아가기 네온 링크 버튼 스타일 */
+.back-home-btn {
+    position: fixed;
+    top: 25px;
+    right: 25px;
+    z-index: 1000; /* 모든 레이어보다 항상 위 배치 */
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 18px;
+    background: rgba(10, 15, 35, 0.65);
+    border: 1px solid rgba(0, 210, 255, 0.4);
+    border-radius: 30px;
+    color: rgba(255, 255, 255, 0.9);
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 500;
+    backdrop-filter: blur(8px);
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+.back-home-btn svg {
+    transition: transform 0.3s ease;
+    color: #00d2ff;
+}
+
+/* 홈 버튼 마우스 오버 네온빔 이펙트 */
+.back-home-btn:hover {
+    color: #ffffff;
+    background: rgba(0, 210, 255, 0.15);
+    border-color: #00d2ff;
+    box-shadow: 0 0 20px rgba(0, 210, 255, 0.4);
+    transform: translateY(-2px);
+}
+
+.back-home-btn:hover svg {
+    transform: scale(1.1);
+}
+
+#telescopeCanvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 2;
+    cursor: crosshair; 
+    background: transparent !important; 
+}
+
+/* 정보창 모달 스타일 */
+.info-modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(1);
+    background: rgba(5, 7, 20, 0.95);
+    border: 2px solid #00d2ff;
+    box-shadow: 0 0 30px rgba(0, 210, 255, 0.5);
+    border-radius: 16px;
+    padding: 30px;
+    width: 90%;
+    max-width: 400px;
+    z-index: 1000;
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+    text-align: center;
+    color: #fff;
+}
+
+.info-modal.hidden {
+    opacity: 0;
+    visibility: hidden;
+    transform: translate(-50%, -48%) scale(0.9);
+}
+
+.modal-content h3 {
+    font-size: 1.6rem;
+    margin: 0 0 15px 0;
+    color: #fff;
+    text-shadow: 0 0 10px #00d2ff;
+}
+
+.modal-tag {
+    font-size: 0.9rem;
+    color: #9370db;
+    margin: 10px 0 15px 0;
+}
+
+#modal-star-desc {
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: #ddd;
+    margin: 20px 0;
+    text-align: left;
+}
+
+#close-modal-btn {
+    background: transparent;
+    border: 1px solid #00d2ff;
+    color: #00d2ff;
+    padding: 10px 25px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-size: 0.9rem;
+}
+
+#close-modal-btn:hover {
+    background: #00d2ff;
+    color: #000;
+    box-shadow: 0 0 15px #00d2ff;
+}
+
+hr {
+    border: 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    margin: 15px 0;
+}
+.stellar-panel {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    width: 280px;
+    background: rgba(7, 11, 22, 0.85);
+    border-left: 3px solid #00d2ff;
+    padding: 15px;
+    font-family: 'Courier New', Courier, monospace; /* 천문대 컴퓨터 느낌의 폰트 */
+    color: #e0e0e0;
+    z-index: 100;
+    box-shadow: 0 0 20px rgba(0,0,0,0.8);
+    pointer-events: none; /* 마우스 드래그 방해 안 되게 */
+    font-size: 13px;
+    line-height: 1.6;
+}
+.stellar-panel.hidden { display: none; }
+.panel-header { display: flex; justify-content: space-between; font-weight: bold; color: #00d2ff; border-bottom: 1px solid rgba(0, 210, 255, 0.2); padding-bottom: 5px; margin-bottom: 10px; }
+.data-row { display: flex; justify-content: space-between; margin-bottom: 4px; }
+.label { color: #87e1ff; width: 110px; }
+.val { text-align: right; color: #ffffff; font-weight: bold; }

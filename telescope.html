@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cosmos - 황도 12궁 관측관</title>
+    <link rel="stylesheet" href="shared.css">
+    <link rel="stylesheet" href="telescope.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { margin: 0; padding: 0; overflow: hidden; background-color: #020408; cursor: crosshair; font-family: 'Noto Sans KR', sans-serif; user-select: none; }
+        
+        /* 1번 배경 레이어 */
+        #galaxyCanvas { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 1; }
+        
+        /* 2번 별자리 레이어 */
+        #telescopeCanvas { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 2; background: transparent !important; pointer-events: auto; }
+        
+        /* [기존 코드 유지 및 홈 버튼 네비게이션 스타일 추가] */
+        header { 
+            position: fixed; 
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            z-index: 100; 
+            background: rgba(5, 7, 20, 0.6);
+            backdrop-filter: blur(5px);
+            border-bottom: 1px solid rgba(0, 210, 255, 0.2);
+        }
+        
+        /* 상단 바 내부 스타일 레이아웃 (mainHome.html 링크 연동) */
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 30px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .nav-container .logo a {
+            color: #00d2ff;
+            font-size: 20px;
+            font-weight: 700;
+            text-decoration: none;
+            letter-spacing: 2px;
+            text-shadow: 0 0 10px rgba(0, 210, 255, 0.5);
+        }
+        .nav-container ul {
+            display: flex;
+            list-style: none;
+            gap: 20px;
+        }
+        .nav-container ul li a {
+            color: #87e1ff;
+            text-decoration: none;
+            font-size: 14px;
+            transition: color 0.2s;
+        }
+        .nav-container ul li a:hover, 
+        .nav-container ul li a.active {
+            color: #ffffff;
+            text-shadow: 0 0 8px #00d2ff;
+        }
+        
+        .zoom-guide-bar {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(5, 7, 20, 0.75);
+            border: 1px solid #00d2ff;
+            color: #87e1ff;
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-size: 14px;
+            z-index: 10;
+            pointer-events: none;
+            box-shadow: 0 0 15px rgba(0, 210, 255, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="nav-container">
+            <div class="logo">
+                <a href="mainHome.html">COSMOS</a>
+            </div>
+            <ul>
+                <li><a href="mainHome.html">홈</a></li>
+                <li><a href="telescope.html" class="active">🔭 망원경 관측</a></li>
+                <li><a href="findConst.html">별자리 찾기</a></li>
+                <li><a href="match.html">운세 & 궁합</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div id="stellar-data-panel" class="stellar-panel hidden">
+        <div class="panel-header">
+            <span id="panel-star-name">ALDEBARAN</span>
+            <span class="panel-etc">•••</span>
+        </div>
+        <div class="panel-body">
+            <div class="data-row"><span class="label">Magnitude</span><span class="val" id="p-mag">0.85</span></div>
+            <div class="data-row"><span class="label">Ra/Dec</span><span class="val" id="p-radec">04h 35m 55s / +16° 30' 33"</span></div>
+            <div class="data-row"><span class="label">Az/Alt</span><span class="val" id="p-azalt">275° 52' 30" / +28° 14' 48"</span></div>
+            <div class="data-row"><span class="label">Calculated X/Y/Z</span><span class="val" id="p-xyz">X: 0.00 | Y: 0.00 | Z: 0.00</span></div>
+        </div>
+    </div>
+
+    <div class="zoom-guide-bar">
+        🖱️ 마우스를 꾹 누른 채 화면을 이동하고, 휠을 굴려 확대/축소해 보세요!
+    </div>
+
+    <canvas id="galaxyCanvas"></canvas>
+
+    <canvas id="telescopeCanvas"></canvas>
+
+    <div id="star-info-modal" class="info-modal hidden">
+        <div class="modal-content">
+            <h3 id="modal-star-name">별 이름</h3>
+            <p class="modal-tag">구분: <span id="modal-star-dist">-</span></p>
+            <hr style="margin: 15px 0; border: 0; border-top: 1px solid rgba(0,210,255,0.3);">
+            <p id="modal-star-desc">망원경 내 별을 클릭하면 천문학 정보가 표시됩니다.</p>
+            <button id="close-modal-btn" style="margin-top:20px; background:#00d2ff; color:#000; border:none; padding:8px 16px; border-radius:6px; cursor:pointer; font-weight:bold;">관측창 닫기</button>
+        </div>
+    </div>
+
+    <script>
+    const galaxyCanvas = document.getElementById('galaxyCanvas');
+    const galaxyCtx = galaxyCanvas.getContext('2d');
+    let gW = 0, gH = 0;
+
+    // 외부 telescope.js와 완벽 동기화를 위한 공유 변수
+    window.galaxyZoomScale = 1.0; 
+    window.galaxyOffsetX = 0;
+    window.galaxyOffsetY = 0;
+
+    function resizeGalaxy() {
+      gW = galaxyCanvas.width = window.innerWidth;
+      gH = galaxyCanvas.height = window.innerHeight;
+    }
+    resizeGalaxy();
+
+    let gStars = [];
+    function initGalaxyStars() {
+      gStars = [];
+      const spreadWidth = gW * 4;
+      const spreadHeight = gH * 4;
+      const count = Math.floor(spreadWidth * spreadHeight / 1600);
+
+      for (let i = 0; i < count; i++) {
+        const t = Math.random();
+        gStars.push({
+          x:  (Math.random() - 0.5) * spreadWidth + (gW / 2),
+          y:  (Math.random() - 0.5) * spreadHeight + (gH / 2),
+          r:  t < 0.55 ? Math.random() * 0.7 + 0.15 : t < 0.88 ? Math.random() * 1.1 + 0.55 : Math.random() * 1.7 + 1.0,
+          vx: (Math.random() - 0.5) * 0.15,
+          vy: (Math.random() - 0.5) * 0.12,
+          alpha: Math.random() * 0.45 + 0.35,
+          ts:   Math.random() * 0.014 + 0.004,
+          tp:   Math.random() * Math.PI * 2,
+          hue:  Math.random() < 0.55 ? 'w' : Math.random() < 0.65 ? 'b' : 'y',
+        });
+      }
+    }
+    initGalaxyStars();
+
+    window.addEventListener('resize', () => { resizeGalaxy(); initGalaxyStars(); });
+
+    let gShoots = [];
+    function spawnGalaxyShoot() {
+      if (gShoots.length > 2) return;
+      const spreadWidth = gW * 2;
+      const spreadHeight = gH * 2;
+      gShoots.push({
+        x:    (Math.random() - 0.5) * spreadWidth + (gW / 2) - 100,
+        y:    (Math.random() - 0.5) * spreadHeight + (gH / 2) - 100,
+        len:  Math.random() * 130 + 70,
+        spd:  Math.random() * 5 + 4,
+        ang:  Math.PI / 5 + (Math.random() - 0.5) * 0.35,
+        life: 1,
+      });
+    }
+    setInterval(spawnGalaxyShoot, 5000);
+
+    let gLast = 0;
+    function drawGalaxy(ts) {
+      const dt = Math.min((ts - gLast) / 16.67, 3);
+      gLast = ts;
+
+      galaxyCtx.fillStyle = '#020408';
+      galaxyCtx.fillRect(0, 0, gW, gH);
+
+      galaxyCtx.save();
+      const zScale = window.galaxyZoomScale || 1.0;
+      
+      // 중심점 기준 줌 변환
+      galaxyCtx.translate(gW / 2, gH / 2);
+      galaxyCtx.scale(zScale, zScale);
+      galaxyCtx.translate(-gW / 2, -gH / 2);
+
+      // 드래그 좌표 연동
+      galaxyCtx.translate(window.galaxyOffsetX || 0, window.galaxyOffsetY || 0);
+
+      const boundW = gW * 4;
+      const boundH = gH * 4;
+      const minX = (gW / 2) - (boundW / 2);
+      const maxX = (gW / 2) + (boundW / 2);
+      const minY = (gH / 2) - (boundH / 2);
+      const maxY = (gH / 2) + (boundH / 2);
+
+      for (const s of gStars) {
+        s.tp += s.ts * dt;
+        const a = Math.max(0.05, Math.min(1, s.alpha + Math.sin(s.tp) * 0.3));
+        const col = s.hue === 'b' ? '170,210,255' : s.hue === 'y' ? '255,238,195' : '255,255,255';
+
+        if (s.r > 1.1) {
+          const grd = galaxyCtx.createRadialGradient(s.x, s.y, 0, s.x, s.y, s.r * 4.5);
+          grd.addColorStop(0, 'rgba(' + col + ',' + (a * 0.55) + ')');
+          grd.addColorStop(1, 'rgba(' + col + ',0)');
+          galaxyCtx.beginPath();
+          galaxyCtx.arc(s.x, s.y, s.r * 4.5, 0, Math.PI * 2);
+          galaxyCtx.fillStyle = grd;
+          galaxyCtx.fill();
+        }
+        galaxyCtx.beginPath();
+        galaxyCtx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+        galaxyCtx.fillStyle = 'rgba(' + col + ',' + a + ')';
+        galaxyCtx.fill();
+
+        s.x += s.vx * dt;
+        s.y += s.vy * dt;
+
+        if (s.x < minX) s.x = maxX;
+        if (s.x > maxX) s.x = minX;
+        if (s.y < minY) s.y = maxY;
+        if (s.y > maxY) s.y = minY;
+      }
+
+      for (const s of gShoots) {
+        const dx = Math.cos(s.ang) * s.len;
+        const dy = Math.sin(s.ang) * s.len;
+        const g = galaxyCtx.createLinearGradient(s.x, s.y, s.x - dx, s.y - dy);
+        g.addColorStop(0,   'rgba(255,255,255,' + (s.life * 0.9) + ')');
+        g.addColorStop(0.3, 'rgba(180,215,255,' + (s.life * 0.4) + ')');
+        g.addColorStop(1,   'rgba(0,0,0,0)');
+        galaxyCtx.beginPath();
+        galaxyCtx.moveTo(s.x, s.y);
+        galaxyCtx.lineTo(s.x - dx, s.y - dy);
+        galaxyCtx.strokeStyle = g;
+        galaxyCtx.lineWidth = 1.5;
+        galaxyCtx.stroke();
+        s.x += Math.cos(s.ang) * s.spd * dt;
+        s.y += Math.sin(s.ang) * s.spd * dt;
+        s.life -= 0.011 * dt;
+      }
+      gShoots = gShoots.filter(s => s.life > 0);
+
+      galaxyCtx.restore(); 
+      requestAnimationFrame(drawGalaxy);
+    }
+    requestAnimationFrame(drawGalaxy);
+    </script>
+
+    <script src="telescope.js"></script>
+</body>
+</html>

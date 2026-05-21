@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>은하수 우주 망원경</title>
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box; }
+    html, body { width:100%; height:100%; overflow:hidden; background:#020408; cursor:crosshair; font-family: 'Noto Sans KR', sans-serif; }
+    
+    /* ── [레이어 분리] 두 개의 캔버스를 화면에 완벽히 겹쳐 정렬 ── */
+    /* 1. 밑바닥 레이어: 실시간 은하수 + 별똥별 배경 */
+    #c { 
+      position:fixed; 
+      inset:0; 
+      width:100%; 
+      height:100%; 
+      z-index: 1; 
+    }
+    
+    /* 2. 상단 레이어: 그 위에 투명하게 얹어질 움직이는 별자리 */
+    #telescopeCanvas { 
+      position:fixed; 
+      inset:0; 
+      width:100%; 
+      height:100%; 
+      z-index: 2;
+      background: transparent; /* 배경을 투명하게 뚫어 아래 은하수가 보이게 함 */
+      pointer-events: auto;    /* 별자리 클릭 히트박스 이벤트 활성화 */
+    }
+
+    /* 3. 모달창 인터페이스가 별자리보다 더 위에 뜨도록 설정 */
+    .info-modal { 
+      position: fixed; 
+      top: 50%; 
+      left: 50%; 
+      transform: translate(-50%, -50%) scale(1);
+      background: rgba(5, 7, 20, 0.95);
+      border: 2px solid #00d2ff;
+      box-shadow: 0 0 30px rgba(0, 210, 255, 0.5);
+      border-radius: 16px;
+      padding: 30px;
+      width: 90%;
+      max-width: 450px;
+      z-index: 1000;
+      backdrop-filter: blur(10px);
+      transition: all 0.3s ease;
+      text-align: center;
+      color: #fff;
+    }
+    .info-modal.hidden {
+      opacity: 0;
+      visibility: hidden;
+      transform: translate(-50%, -48%) scale(0.9);
+    }
+    .modal-content h3 {
+      font-size: 1.6rem;
+      margin: 0 0 15px 0;
+      color: #fff;
+      text-shadow: 0 0 10px #00d2ff;
+    }
+    .modal-tag {
+      font-size: 0.9rem;
+      color: #9370db;
+      margin: 10px 0 15px 0;
+    }
+    #modal-star-desc {
+      font-size: 0.95rem;
+      line-height: 1.6;
+      color: #ddd;
+      margin: 20px 0;
+      text-align: left;
+    }
+    #close-modal-btn {
+      background: transparent;
+      border: 1px solid #00d2ff;
+      color: #00d2ff;
+      padding: 10px 25px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s;
+      font-size: 0.9rem;
+    }
+    #close-modal-btn:hover {
+      background: #00d2ff;
+      color: #000;
+      box-shadow: 0 0 15px #00d2ff;
+    }
+    hr {
+      border: 0;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      margin: 15px 0;
+    }
+  </style>
+</head>
+<body>
+
+  <canvas id="c"></canvas>
+
+  <canvas id="telescopeCanvas"></canvas>
+
+  <div id="star-info-modal" class="info-modal hidden">
+    <div class="modal-content">
+      <h3 id="modal-star-name">별 이름</h3>
+      <p class="modal-tag">지구로부터의 거리: <span id="modal-star-dist">-</span></p>
+      <hr>
+      <p id="modal-star-desc">망원경 내 별을 클릭하면 천문학 정보가 표시됩니다.</p>
+      <button id="close-modal-btn">관측창 닫기</button>
+    </div>
+  </div>
+
+  <script>
+  const canvas = document.getElementById('c');
+  const ctx = canvas.getContext('2d');
+  let W = 0, H = 0;
+
+  function resize() {
+    W = canvas.width = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+  }
+  resize();
+
+  let stars = [];
+  function initStars() {
+    stars = [];
+    const count = Math.floor(W * H / 1500);
+    for (let i = 0; i < count; i++) {
+      const t = Math.random();
+      stars.push({
+        x:  Math.random() * W,
+        y:  Math.random() * H,
+        r:  t < 0.55 ? Math.random() * 0.7 + 0.15 : t < 0.88 ? Math.random() * 1.1 + 0.55 : Math.random() * 1.7 + 1.0,
+        vx: (Math.random() - 0.5) * 0.27,
+        vy: (Math.random() - 0.5) * 0.18,
+        alpha: Math.random() * 0.45 + 0.35,
+        ts:   Math.random() * 0.014 + 0.004,
+        tp:   Math.random() * Math.PI * 2,
+        hue:  Math.random() < 0.55 ? 'w' : Math.random() < 0.65 ? 'b' : 'y',
+      });
+    }
+  }
+  initStars();
+
+  window.addEventListener('resize', () => { resize(); initStars(); });
+
+  let shoots = [];
+  function spawnShoot() {
+    if (shoots.length > 2) return;
+    shoots.push({
+      x:    Math.random() * W * 0.65,
+      y:    Math.random() * H * 0.35,
+      len:  Math.random() * 130 + 70,
+      spd:  Math.random() * 5 + 4,
+      ang:  Math.PI / 5 + (Math.random() - 0.5) * 0.35,
+      life: 1,
+    });
+  }
+  setInterval(spawnShoot, 3000 + Math.random() * 4000);
+
+  let last = 0;
+  function draw(ts) {
+    const dt = Math.min((ts - last) / 16.67, 3);
+    last = ts;
+
+    ctx.fillStyle = '#020408';
+    ctx.fillRect(0, 0, W, H);
+
+    for (const s of stars) {
+      s.tp += s.ts * dt;
+      const a = Math.max(0.05, Math.min(1, s.alpha + Math.sin(s.tp) * 0.3));
+      const col = s.hue === 'b' ? '170,210,255' : s.hue === 'y' ? '255,238,195' : '255,255,255';
+
+      if (s.r > 1.1) {
+        const grd = ctx.createRadialGradient(s.x, s.y, 0, s.x, s.y, s.r * 4.5);
+        grd.addColorStop(0, 'rgba(' + col + ',' + (a * 0.55) + ')');
+        grd.addColorStop(1, 'rgba(' + col + ',0)');
+        ctx.beginPath();
+        ctx.arc(s.x, s.y, s.r * 4.5, 0, Math.PI * 2);
+        ctx.fillStyle = grd;
+        ctx.fill();
+      }
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(' + col + ',' + a + ')';
+      ctx.fill();
+
+      s.x += s.vx * dt;
+      s.y += s.vy * dt;
+      if (s.x < -5)  s.x = W + 5;
+      if (s.x > W+5) s.x = -5;
+      if (s.y < -5)  s.y = H + 5;
+      if (s.y > H+5) s.y = -5;
+    }
+
+    for (const s of shoots) {
+      const dx = Math.cos(s.ang) * s.len;
+      const dy = Math.sin(s.ang) * s.len;
+      const g = ctx.createLinearGradient(s.x, s.y, s.x - dx, s.y - dy);
+      g.addColorStop(0,   'rgba(255,255,255,' + (s.life * 0.9) + ')');
+      g.addColorStop(0.3, 'rgba(180,215,255,' + (s.life * 0.4) + ')');
+      g.addColorStop(1,   'rgba(0,0,0,0)');
+      ctx.beginPath();
+      ctx.moveTo(s.x, s.y);
+      ctx.lineTo(s.x - dx, s.y - dy);
+      ctx.strokeStyle = g;
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+      s.x += Math.cos(s.ang) * s.spd * dt;
+      s.y += Math.sin(s.ang) * s.spd * dt;
+      s.life -= 0.011 * dt;
+    }
+    shoots = shoots.filter(s => s.life > 0);
+
+    requestAnimationFrame(draw);
+  }
+  requestAnimationFrame(draw);
+  </script>
+
+  <script src="telescope.js"></script>
+
+</body>
+</html>

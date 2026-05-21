@@ -18,7 +18,7 @@
                 <a href="mainHome.html">COSMOS</a>
             </div>
             <ul>
-                <li><a href="mainHome.html" class="active">홈</a></li>
+                <li><a href="mainHome.html" class="active">게임</a></li>
                 <li><a href="findConst.html">별자리 찾기</a></li>
                 <li><a href="match.html">운세 & 궁합</a></li>
             </ul>
@@ -29,8 +29,73 @@
         <section id="hero">
             <h1 class="fade-in">밤하늘의 이야기를 만나보세요</h1>
             <p>당신의 탄생석과 연결된 별자리의 비밀을 공개합니다.</p>
-            <button class="cta-btn">탐험 시작하기</button>
+            <button class="cta-btn" id="exploreBtn">탐험 시작하기</button>
         </section>
+
+        <section id="constellations">
+            <h2>이달의 주요 별자리</h2>
+            <div class="card-container">
+
+                <div class="const-card">
+                    <div class="card-inner">
+                        <div class="card-front">
+                            <img src="image/황소자리.jpg" alt="황소자리" class="zodiac-img">
+                            <h3>황소자리</h3>
+                            <p>4.20 - 5.20</p>
+                        </div>
+                        <div class="card-back">
+                            <h3>황소자리</h3>
+                            <p class="card-desc">신뢰와 끈기의 상징. 밤하늘에서 가장 밝은 붉은 별 '알데바란'을 품고 있는 열정적인 별자리입니다.</p>
+                            <a href="findConst.html" class="card-link">자세히 보기</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="const-card">
+                    <div class="card-inner">
+                        <div class="card-front">
+                            <img src="image/쌍둥이자리.jpg" alt="쌍둥이자리" class="zodiac-img">
+                            <h3>쌍둥이자리</h3>
+                            <p>5.21 - 6.21</p>
+                        </div>
+                        <div class="card-back">
+                            <h3>쌍둥이자리</h3>
+                            <p class="card-desc">다재다능과 소통의 상징. 카스토르와 폴룩스 두 형제의 깊은 우애가 밤하늘에 새겨진 이야기입니다.</p>
+                            <a href="findConst.html" class="card-link">자세히 보기</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="const-card">
+                    <div class="card-inner">
+                        <div class="card-front">
+                            <img src="image/게자리.jpg" alt="게자리" class="zodiac-img">
+                            <h3>게자리</h3>
+                            <p>6.22 - 7.22</p>
+                        </div>
+                        <div class="card-back">
+                            <h3>게자리</h3>
+                            <p class="card-desc">가족애와 감수성의 상징. 그리스 신화 속 헤라클레스의 발에 밟히면서도 끝까지 싸운 게의 이야기입니다.</p>
+                            <a href="findConst.html" class="card-link">자세히 보기</a>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="card-container" id="dynamicCards"></div>
+            <div class="find-btn-container">
+                <a href="findConst.html" class="find-my-zodiac-btn">
+                    <span>내 별자리 찾기</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                        class="arrow-icon">
+                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                        <polyline points="12 5 19 12 12 19"></polyline>
+                    </svg>
+                </a>
+            </div>
+        </section>
+        
     </main>
 
     <script src="mainHome.js"></script>

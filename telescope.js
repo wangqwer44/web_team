@@ -310,8 +310,11 @@ function drawCelestialGrid() {
 
 function drawRealCosmosLoop() {
     telescopeCtx.clearRect(0, 0, tW, tH);
-    
+
     currentZoom += (targetZoom - currentZoom) * 0.1;
+    window.galaxyZoomScale = currentZoom;
+    window.galaxyOffsetX = offsetX;
+    window.galaxyOffsetY = offsetY;
     drawCelestialGrid();
 
     telescopeCtx.save();
@@ -363,21 +366,29 @@ function drawRealCosmosLoop() {
 // 4. 왼쪽 상단 실시간 데이터 바인딩 UI 핸들러
 // ==========================================
 function updateDynamicPanel(starMeta) {
-    const panel = document.getElementById('cosmicDataPanel');
-    
-    document.getElementById('panelStarName').innerText = starMeta.name || "미지정 항성";
-    document.getElementById('panelConstName').innerText = `${starMeta.parent ? starMeta.parent.name : '외곽 영역'} 소속`;
-    document.getElementById('panelMag').innerText = starMeta.mag || "-";
-    document.getElementById('panelRadec').innerText = starMeta.radec || "00h 00m 00.0s  +00° 00' 00.0\"";
-    document.getElementById('panelAzalt').innerText = starMeta.azalt || "000° 00' 00.0\" / +00° 00' 00.0\"";
-    document.getElementById('panelDist').innerText = starMeta.dist || "-";
-    document.getElementById('panelDesc').innerText = starMeta.desc || "관측 제어 데이터가 존재하지 않습니다.";
-    
+    const panel = document.getElementById('stellar-data-panel');
+    if (!panel) return;
+
+    const setText = (id, value) => {
+        const el = document.getElementById(id);
+        if (el) el.innerText = value;
+    };
+    const parentName = starMeta.parent ? starMeta.parent.name : "외곽 영역";
+    const calcX = starMeta.parent ? starMeta.parent.fixedX + starMeta.x * constellationScale : starMeta.x;
+    const calcY = starMeta.parent ? starMeta.parent.fixedY + starMeta.y * constellationScale : starMeta.y;
+
+    setText('panel-star-name', `${starMeta.name || "미지정 항성"} · ${parentName}`);
+    setText('p-mag', starMeta.mag || "-");
+    setText('p-radec', starMeta.radec || "00h 00m 00.0s  +00° 00' 00.0\"");
+    setText('p-azalt', starMeta.azalt || "000° 00' 00.0\" / +00° 00' 00.0\"");
+    setText('p-xyz', `X: ${calcX.toFixed(1)} | Y: ${calcY.toFixed(1)} | Z: 0.0`);
+
     panel.classList.remove('hidden');
 }
 
 function closeDynamicPanel() {
-    document.getElementById('cosmicDataPanel').classList.add('hidden');
+    const panel = document.getElementById('stellar-data-panel');
+    if (panel) panel.classList.add('hidden');
 }
 
 window.updateDynamicPanel = updateDynamicPanel;
@@ -418,6 +429,13 @@ window.addEventListener('mouseup', function() {
         telescopeCanvas.style.cursor = "crosshair";
     }
 });
+
+const closeModalBtn = document.getElementById('close-modal-btn');
+if (closeModalBtn) {
+    closeModalBtn.addEventListener('click', () => {
+        document.getElementById('star-info-modal')?.classList.add('hidden');
+    });
+}
 
 // [클릭 오프셋 버그 수정] 화면 정렬 변화에 맞춘 정확한 충돌 판정식 계산
 telescopeCanvas.addEventListener('click', function(e) {

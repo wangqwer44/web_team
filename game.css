@@ -167,31 +167,67 @@ main {
     margin-bottom: 25px;
 }
 
-.game-header > div {
+.game-header > span {
     display: table-cell;
     font-size: 1.1rem;
     font-weight: bold;
 }
 
-#info-round {
+#round-display {
     text-align: left;
     color: var(--neon-purple);
 }
 
-#info-score {
-    text-align: center;
-    color: #fff;
-}
-
-#info-timer {
+#score-display {
     text-align: right;
     color: var(--neon-blue);
 }
+
+.timer-wrap {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 22px;
+}
+
+.timer-bar {
+    flex: 1;
+    height: 10px;
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 999px;
+    overflow: hidden;
+}
+
+#timer-fill {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, var(--neon-purple), var(--neon-blue));
+    border-radius: inherit;
+    transition: width 0.25s ease, background 0.25s ease;
+}
+
+#timer-fill.warning {
+    background: linear-gradient(90deg, #ff6b35, #ff3232);
+}
+
+#timer-text {
+    min-width: 34px;
+    color: var(--neon-blue);
+    font-weight: 800;
+    text-align: right;
+}
+
+#timer-text.warning {
+    color: #ff6b35;
+}
+
 #gameCanvas {
     background: rgba(5, 5, 16, 0.7);
     border: 1px solid rgba(127, 255, 212, 0.2);
     border-radius: 16px;
     display: block;
+    width: 100%;
+    height: 420px;
     margin: 0 auto 25px auto;
     max-width: 100%;
     box-shadow: 0 0 20px rgba(5, 5, 16, 0.6);
@@ -203,7 +239,7 @@ main {
     text-align: center;
 }
 
-.btn-choice {
+.choice-btn {
     display: inline-block;
     width: 46%;
     margin: 2% 2%;
@@ -219,11 +255,28 @@ main {
     vertical-align: top;
 }
 
-.btn-choice:hover {
+.choice-btn:hover:not(:disabled) {
     background: rgba(147, 112, 219, 0.15);
     border-color: var(--neon-purple);
     box-shadow: 0 0 15px rgba(147, 112, 219, 0.2);
     transform: translateY(-2px);
+}
+
+.choice-btn:disabled {
+    cursor: default;
+    opacity: 0.82;
+}
+
+.choice-btn.correct {
+    border-color: rgba(0, 255, 150, 0.8);
+    background: rgba(0, 255, 150, 0.16);
+    color: #baffdf;
+}
+
+.choice-btn.wrong {
+    border-color: rgba(255, 80, 80, 0.8);
+    background: rgba(255, 80, 80, 0.16);
+    color: #ffd0d0;
 }
 button, .btn-primary, .btn-hint {
     font-family: inherit;
@@ -357,7 +410,11 @@ button, .btn-primary, .btn-hint {
         font-size: 1.8rem;
     }
 
-    .btn-choice {
+    #gameCanvas {
+        height: 340px;
+    }
+
+    .choice-btn {
         width: 100%;
         margin: 8px 0;
     }

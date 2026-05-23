@@ -1,10 +1,11 @@
 const canvas = document.getElementById('starCanvas');
-const ctx = canvas.getContext('2d');
+const ctx = canvas?.getContext('2d');
 
 let stars = [];
 const starCount = 400;
 
 function resize() {
+    if (!canvas) return;
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
 }
@@ -18,6 +19,7 @@ class Star {
     }
 
     init() {
+        if (!canvas) return;
         this.x = Math.random() * canvas.width;
         this.y = Math.random() * canvas.height;
         this.speed = Math.random() * 0.5 + 0.1;
@@ -55,7 +57,8 @@ for (let i = 0; i < starCount; i++) {
 }
 
 function animate() {
-    ctx.fillStyle = 'rgba(5, 5, 16, 0.2)'; 
+    if (!canvas || !ctx) return;
+    ctx.fillStyle = 'rgba(5, 5, 16, 0.2)';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
     stars.forEach(star => {
@@ -68,6 +71,11 @@ function animate() {
 
 animate();
 
-document.getElementById('exploreBtn').addEventListener('click', () => {
-    document.getElementById('constellations').scrollIntoView({ behavior: 'smooth' });
-});
+const exploreBtn = document.getElementById('exploreBtn');
+const constellations = document.getElementById('constellations');
+
+if (exploreBtn && constellations) {
+    exploreBtn.addEventListener('click', () => {
+        constellations.scrollIntoView({ behavior: 'smooth' });
+    });
+}

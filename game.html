@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cosmos - 별자리 맞추기</title>
+    <link rel="stylesheet" href="shared.css">
+    <link rel="stylesheet" href="game.css">
+</head>
+<body>
+    <canvas id="starCanvas"></canvas>
+
+    <header>
+        <nav>
+            <div class="logo"><a href="mainHome.html">COSMOS</a></div>
+            <ul>
+                <li><a href="mainHome.html">홈</a></li>
+                <li><a href="findConst.html">별자리 찾기</a></li>
+                <li><a href="match.html">운세 & 궁합</a></li>
+                <li><a href="game.html" class="active">미니게임</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <!-- 시작 화면 -->
+        <div id="screen-idle" class="screen active">
+            <div class="panel">
+                <h1>별자리 맞추기</h1>
+                <p class="sub">별들을 보고 어떤 별자리인지 맞춰보세요!</p>
+                <div class="rules">
+                    <div class="rule-item">⏱ 라운드당 30초</div>
+                    <div class="rule-item">⭐ 총 5라운드</div>
+                    <div class="rule-item">💡 힌트 사용 시 -20점</div>
+                    <div class="rule-item">🖱 별 클릭으로 선 연결 가능</div>
+                </div>
+                <button id="start-btn" class="btn-primary">게임 시작</button>
+            </div>
+        </div>
+
+        <!-- 게임 화면 -->
+        <div id="screen-game" class="screen">
+            <div class="panel game-panel">
+                <div class="game-header">
+                    <span id="round-display">라운드 1 / 5</span>
+                    <span id="score-display">0점</span>
+                </div>
+                <div class="timer-wrap">
+                    <div class="timer-bar">
+                        <div id="timer-fill"></div>
+                    </div>
+                    <span id="timer-text">30</span>
+                </div>
+                <canvas id="gameCanvas"></canvas>
+                <div class="choices" id="choices"></div>
+                <button id="hint-btn" class="btn-hint">💡 힌트 보기 (-20점)</button>
+            </div>
+        </div>
+
+        <!-- 라운드 결과 화면 -->
+        <div id="screen-result" class="screen">
+            <div class="panel result-panel">
+                <div id="result-icon" class="result-icon">✅</div>
+                <h2 id="result-title">정답!</h2>
+                <p id="result-desc">정답입니다.</p>
+                <p id="result-score-gained" class="score-gained">+150점</p>
+                <button id="next-btn" class="btn-primary">다음 라운드</button>
+            </div>
+        </div>
+
+        <!-- 게임 오버 화면 -->
+        <div id="screen-gameover" class="screen">
+            <div class="panel gameover-panel">
+                <h1>게임 종료!</h1>
+                <div class="final-score-wrap">
+                    <p>최종 점수</p>
+                    <div class="final-score" id="final-score">0</div>
+                    <p>점</p>
+                </div>
+                <p id="final-grade" class="final-grade"></p>
+                <div class="gameover-btns">
+                    <button id="restart-btn" class="btn-primary">다시 하기</button>
+                    <a href="mainHome.html" class="btn-secondary">홈으로</a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="game.js"></script>
+</body>
+</html>

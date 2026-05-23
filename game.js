@@ -141,6 +141,11 @@ const bgCanvas   = document.getElementById('starCanvas');
 const bgCtx      = bgCanvas.getContext('2d');
 const gameCanvas = document.getElementById('gameCanvas');
 const gameCtx    = gameCanvas.getContext('2d');
+const gameBgm    = document.getElementById('game-bgm');
+
+if (gameBgm) {
+    gameBgm.volume = 0.35;
+}
 
 // 배경 별
 const bgStars = [];
@@ -288,8 +293,18 @@ function showScreen(id) {
     document.getElementById(id).classList.add('active');
 }
 
+function playBackgroundMusic() {
+    if (!gameBgm) return;
+
+    const playPromise = gameBgm.play();
+    if (playPromise) {
+        playPromise.catch(() => {});
+    }
+}
+
 // ── 게임 흐름 ────────────────────────────────────────────────────
 function startGame() {
+    playBackgroundMusic();
     state.round       = 0;
     state.score       = 0;
     state.usedIndices = [];
@@ -518,6 +533,16 @@ window.addEventListener('resize', () => {
     initBg();
     if (state.phase === 'playing' || state.phase === 'answered') {
         resizeGameCanvas();
+    }
+});
+
+document.addEventListener('visibilitychange', () => {
+    if (!gameBgm) return;
+
+    if (document.hidden) {
+        gameBgm.pause();
+    } else if (state.phase !== 'idle') {
+        playBackgroundMusic();
     }
 });
 

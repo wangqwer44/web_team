@@ -33,6 +33,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            gap: 24px;
             padding: 15px 30px;
             max-width: 1200px;
             margin: 0 auto;
@@ -48,6 +49,8 @@
         .nav-container ul {
             display: flex;
             list-style: none;
+            justify-content: flex-end;
+            flex-wrap: wrap;
             gap: 20px;
         }
         .nav-container ul li a {
@@ -55,6 +58,7 @@
             text-decoration: none;
             font-size: 14px;
             transition: color 0.2s;
+            white-space: nowrap;
         }
         .nav-container ul li a:hover, 
         .nav-container ul li a.active {
@@ -77,6 +81,23 @@
             pointer-events: none;
             box-shadow: 0 0 15px rgba(0, 210, 255, 0.3);
         }
+
+        @media (max-width: 640px) {
+            .nav-container {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+
+            .nav-container ul {
+                justify-content: flex-start;
+                gap: 10px 12px;
+            }
+
+            .nav-container ul li a {
+                font-size: 13px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -87,9 +108,10 @@
             </div>
             <ul>
                 <li><a href="mainHome.html">홈</a></li>
-                <li><a href="telescope.html" class="active">🔭 망원경 관측</a></li>
+                <li><a href="telescope.html" class="active">망원경 관측</a></li>
                 <li><a href="findConst.html">별자리 찾기</a></li>
-                <li><a href="match.html">운세 & 궁합</a></li>
+                <li><a href="match.html">운세 &amp; 궁합</a></li>
+                <li><a href="game.html">미니게임</a></li>
             </ul>
         </nav>
     </header>

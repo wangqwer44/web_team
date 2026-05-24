@@ -74,8 +74,59 @@ animate();
 const exploreBtn = document.getElementById('exploreBtn');
 const constellations = document.getElementById('constellations');
 
-if (exploreBtn && constellations) {
+if (exploreBtn && constellations && !window.jQuery) {
     exploreBtn.addEventListener('click', () => {
         constellations.scrollIntoView({ behavior: 'smooth' });
     });
+}
+
+if (window.jQuery) {
+    (($) => {
+        $.fn.cosmosGlow = function(options) {
+            const settings = $.extend({
+                glowColor: 'rgba(127, 255, 212, 0.35)',
+                lift: '-6px',
+                speed: 180
+            }, options);
+
+            return this.each(function() {
+                const $item = $(this);
+
+                if ($item.data('cosmosGlowReady')) return;
+                $item.data('cosmosGlowReady', true);
+
+                $item
+                    .attr('tabindex', '0')
+                    .css({
+                        transition: `transform ${settings.speed}ms ease, box-shadow ${settings.speed}ms ease`
+                    })
+                    .on('mouseenter.cosmosGlow focusin.cosmosGlow', function() {
+                        $(this).css({
+                            transform: `translateY(${settings.lift})`,
+                            boxShadow: `0 0 28px ${settings.glowColor}`
+                        });
+                    })
+                    .on('mouseleave.cosmosGlow focusout.cosmosGlow', function() {
+                        $(this).css({
+                            transform: '',
+                            boxShadow: ''
+                        });
+                    });
+            });
+        };
+
+        $(function() {
+            $('#exploreBtn').on('click.jqueryScroll', function(event) {
+                const $target = $('#constellations');
+                if (!$target.length) return;
+
+                event.preventDefault();
+                $('html, body').stop(true).animate({
+                    scrollTop: $target.offset().top
+                }, 650);
+            });
+
+            $('.const-card, .video-player-wrapper').cosmosGlow();
+        });
+    })(window.jQuery);
 }

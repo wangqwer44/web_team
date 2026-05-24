@@ -40,13 +40,17 @@ header {
 }
 
 nav {
-    display: table;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 24px;
+    max-width: 1200px;
+    margin: 0 auto;
     width: 100%;
 }
 
 nav .logo {
-    display: table-cell;
-    vertical-align: middle;
+    display: block;
 }
 
 nav .logo a {
@@ -62,14 +66,16 @@ nav .logo a:hover {
 }
 
 nav ul {
-    display: table-cell;
-    text-align: right;
-    vertical-align: middle;
+    display: flex;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    gap: 24px;
+    list-style: none;
 }
 
 nav ul li {
-    display: inline-block;
-    margin-left: 30px;
+    display: block;
+    margin-left: 0;
 }
 
 nav ul li a {
@@ -78,12 +84,30 @@ nav ul li a {
     font-size: 1rem;
     font-weight: 500;
     transition: 0.3s;
+    white-space: nowrap;
 }
 
 nav ul li a:hover,
 nav ul li a.active {
     color: var(--neon-blue);
     text-shadow: 0 0 10px rgba(127, 255, 212, 0.5);
+}
+
+@media (max-width: 640px) {
+    nav {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    nav ul {
+        justify-content: flex-start;
+        gap: 10px 12px;
+    }
+
+    nav ul li a {
+        font-size: 0.85rem;
+    }
 }
 main {
     display: block;

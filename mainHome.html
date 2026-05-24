@@ -19,8 +19,9 @@
             </div>
             <ul>
                 <li><a href="mainHome.html" class="active">홈</a></li>
+                <li><a href="telescope.html">망원경 관측</a></li>
                 <li><a href="findConst.html">별자리 찾기</a></li>
-                <li><a href="match.html">운세 & 궁합</a></li>
+                <li><a href="match.html">운세 &amp; 궁합</a></li>
                 <li><a href="game.html">미니게임</a></li>
             </ul>
         </nav>
@@ -96,9 +97,41 @@
                 </a>
             </div>
         </section>
-        
+
+        <section id="observation">
+            <h2>코스모스 관측 영상</h2>
+            <div class="video-player-wrapper">
+                <div class="video-embed-container">
+                    <video controls playsinline preload="metadata"
+                        poster="https://svs.gsfc.nasa.gov/vis/a030000/a030600/a030687/hudf_fly-example_frame-1920x1080.jpg">
+                        <source src="https://svs.gsfc.nasa.gov/vis/a030000/a030600/a030687/hudf-b-1920x1080p30.webm"
+                            type="video/webm">
+                        <source src="https://svs.gsfc.nasa.gov/vis/a030000/a030600/a030687/hudf-b-1280x720.m4v"
+                            type="video/mp4">
+                        브라우저가 영상을 지원하지 않습니다.
+                    </video>
+                </div>
+                <div class="video-caption-outside">
+                    <p class="caption-title">Hubble Ultra Deep Field 비행 영상</p>
+                    <p class="caption-sub">수천 개의 은하 사이를 지나가는 NASA Scientific Visualization Studio 영상입니다.</p>
+                </div>
+                <div class="observation-actions">
+                    <a href="telescope.html" class="find-my-zodiac-btn">
+                        <span>망원경 관측하기</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                            stroke-linejoin="round" class="arrow-icon">
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                            <polyline points="12 5 19 12 12 19"></polyline>
+                        </svg>
+                    </a>
+                </div>
+            </div>
+        </section>
+
     </main>
 
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="mainHome.js"></script>
 </body>
 
